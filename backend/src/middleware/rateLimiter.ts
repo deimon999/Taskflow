@@ -14,8 +14,8 @@ export const apiLimiter = rateLimit({
 // Stricter rate limiter for auth routes
 export const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour window
-    limit: 5, // Start blocking after 5 requests
+    limit: 50, // Allow 50 attempts per hour
     message: {
-        message: 'Too many accounts created or login attempts from this IP, please try again after an hour'
+        message: 'Too many login attempts from this IP, please try again after an hour'
     }
 });
