@@ -55,51 +55,58 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-background">
-            {/* Background gradient blobs */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary/20 blur-3xl" />
-                <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-purple-800/20 blur-3xl" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
-            </div>
+        <div className="min-h-screen w-full flex bg-background">
+            {/* Left panel — branding */}
+            <div className="hidden lg:flex lg:w-[45%] bg-primary flex-col justify-between p-12 relative overflow-hidden">
+                {/* Subtle pattern circles */}
+                <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/10" />
+                <div className="absolute bottom-24 -left-16 w-64 h-64 rounded-full bg-white/[0.07]" />
 
-            {/* Grid pattern overlay */}
-            <div
-                className="absolute inset-0 opacity-[0.03]"
-                style={{
-                    backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-                    backgroundSize: "40px 40px",
-                }}
-            />
-
-            <div className="relative z-10 w-full max-w-md px-4">
-                {/* Logo */}
-                <div className="flex justify-center mb-8">
-                    <div className="flex items-center gap-2">
-                        <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center glow-sm">
-                            <Zap className="w-5 h-5 text-white" fill="white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight gradient-text">TaskFlow</span>
+                <div className="relative flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                        <Zap className="w-4 h-4 text-white" fill="white" />
                     </div>
+                    <span className="text-white font-bold text-lg tracking-tight">TaskFlow</span>
                 </div>
 
-                {/* Card */}
-                <div className="glass rounded-2xl p-8 glow-purple">
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-foreground">Welcome back</h1>
-                        <p className="text-muted-foreground mt-1 text-sm">Sign in to your workspace</p>
+                <div className="relative">
+                    <blockquote className="text-white/90 text-2xl font-medium leading-snug mb-6">
+                        "The key is not to prioritize what's on your schedule, but to schedule your priorities."
+                    </blockquote>
+                    <p className="text-white/60 text-sm">— Stephen Covey</p>
+                </div>
+
+                <div className="relative text-white/50 text-sm">
+                    © 2026 TaskFlow. All rights reserved.
+                </div>
+            </div>
+
+            {/* Right panel — form */}
+            <div className="flex-1 flex items-center justify-center p-8">
+                <div className="w-full max-w-sm">
+                    {/* Mobile logo */}
+                    <div className="lg:hidden flex items-center gap-2 mb-10">
+                        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                            <Zap className="w-4 h-4 text-white" fill="white" />
+                        </div>
+                        <span className="font-bold text-lg tracking-tight gradient-text">TaskFlow</span>
                     </div>
 
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email" className="text-sm font-medium text-foreground/80">Email</Label>
+                    <div className="mb-8">
+                        <h1 className="text-2xl font-bold text-foreground">Sign in</h1>
+                        <p className="text-muted-foreground mt-1.5 text-sm">Welcome back — enter your details to continue</p>
+                    </div>
+
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input
                                     id="email"
                                     type="email"
                                     placeholder="you@example.com"
-                                    className="pl-9 bg-white/5 border-white/10 focus:border-primary/50 focus:ring-primary/20 transition-all"
+                                    className="pl-9 h-10 border-border focus:border-primary/60 focus:ring-primary/20 transition-all"
                                     {...form.register("email")}
                                 />
                             </div>
@@ -108,15 +115,15 @@ export default function LoginPage() {
                             )}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="password" className="text-sm font-medium text-foreground/80">Password</Label>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input
                                     id="password"
                                     type="password"
                                     placeholder="••••••••"
-                                    className="pl-9 bg-white/5 border-white/10 focus:border-primary/50 focus:ring-primary/20 transition-all"
+                                    className="pl-9 h-10 border-border focus:border-primary/60 transition-all"
                                     {...form.register("password")}
                                 />
                             </div>
@@ -127,32 +134,24 @@ export default function LoginPage() {
 
                         <Button
                             type="submit"
-                            className="w-full mt-2 bg-primary hover:bg-primary/90 text-white font-semibold h-11 rounded-xl transition-all duration-200 glow-sm hover:glow-purple"
+                            className="w-full h-10 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-all"
                             disabled={isLoading}
                         >
                             {isLoading ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                                <>
-                                    Sign In <ArrowRight className="w-4 h-4 ml-2" />
-                                </>
+                                <>Continue <ArrowRight className="w-4 h-4 ml-1.5" /></>
                             )}
                         </Button>
                     </form>
 
-                    <div className="mt-6 text-center">
-                        <p className="text-sm text-muted-foreground">
-                            Don&apos;t have an account?{" "}
-                            <Link href="/register" className="text-primary hover:text-primary/80 font-medium transition-colors">
-                                Create one free
-                            </Link>
-                        </p>
-                    </div>
+                    <p className="text-center text-sm text-muted-foreground mt-6">
+                        Don&apos;t have an account?{" "}
+                        <Link href="/register" className="text-primary hover:text-primary/80 font-medium transition-colors">
+                            Create one
+                        </Link>
+                    </p>
                 </div>
-
-                <p className="text-center text-xs text-muted-foreground mt-6">
-                    Protected by industry-standard encryption
-                </p>
             </div>
         </div>
     );

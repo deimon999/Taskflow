@@ -14,9 +14,9 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const STATUS_CONFIG = {
-    "todo": { label: "To Do", cls: "text-amber-400 bg-amber-400/10 border-amber-400/20" },
-    "in-progress": { label: "In Progress", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
-    "done": { label: "Done", cls: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" },
+    "todo": { label: "To Do", cls: "text-amber-700 bg-amber-50 border-amber-200" },
+    "in-progress": { label: "In Progress", cls: "text-blue-700 bg-blue-50 border-blue-200" },
+    "done": { label: "Done", cls: "text-emerald-700 bg-emerald-50 border-emerald-200" },
 };
 
 export default function TasksPage() {
@@ -69,7 +69,7 @@ export default function TasksPage() {
     const handleCreate = () => { setTaskToEdit(null); setIsModalOpen(true); };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-5xl">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -80,29 +80,29 @@ export default function TasksPage() {
                 </div>
                 <Button
                     onClick={handleCreate}
-                    className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-10 px-5 glow-sm gap-2 transition-all"
+                    className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg h-9 px-4 gap-1.5"
                 >
                     <Plus className="h-4 w-4" /> Add Task
                 </Button>
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-2.5">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search tasks..."
-                        className="pl-9 bg-white/[0.04] border-white/[0.08] focus:border-primary/40 rounded-xl h-10"
+                        className="pl-9 h-9 border-border bg-background"
                         value={search}
                         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                     />
                 </div>
                 <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
-                    <SelectTrigger className="w-full sm:w-44 bg-white/[0.04] border-white/[0.08] rounded-xl h-10 text-sm">
+                    <SelectTrigger className="w-full sm:w-40 h-9 border-border bg-background text-sm">
                         <SlidersHorizontal className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
-                        <SelectValue placeholder="Filter status" />
+                        <SelectValue placeholder="Status" />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
+                    <SelectContent>
                         <SelectItem value="all">All Statuses</SelectItem>
                         <SelectItem value="todo">To Do</SelectItem>
                         <SelectItem value="in-progress">In Progress</SelectItem>
@@ -110,10 +110,10 @@ export default function TasksPage() {
                     </SelectContent>
                 </Select>
                 <Select value={sort} onValueChange={setSort} disabled={!!search}>
-                    <SelectTrigger className="w-full sm:w-44 bg-white/[0.04] border-white/[0.08] rounded-xl h-10 text-sm">
-                        <SelectValue placeholder="Sort by" />
+                    <SelectTrigger className="w-full sm:w-40 h-9 border-border bg-background text-sm">
+                        <SelectValue placeholder="Sort" />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
+                    <SelectContent>
                         <SelectItem value="newest">Newest First</SelectItem>
                         <SelectItem value="oldest">Oldest First</SelectItem>
                         <SelectItem value="dueDate">By Due Date</SelectItem>
@@ -122,44 +122,33 @@ export default function TasksPage() {
             </div>
 
             {/* Table */}
-            <div className="rounded-2xl border border-white/[0.06] bg-card overflow-hidden">
+            <div className="rounded-xl border border-border bg-card shadow-card overflow-hidden">
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-white/[0.06] hover:bg-transparent">
-                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pl-5 w-[45%]">
-                                Task
-                            </TableHead>
-                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                Status
-                            </TableHead>
-                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                Due Date
-                            </TableHead>
-                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pr-5 text-right">
-                                Actions
-                            </TableHead>
+                        <TableRow className="border-border bg-muted/40 hover:bg-muted/40">
+                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide pl-5 w-[45%]">Task</TableHead>
+                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</TableHead>
+                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Due Date</TableHead>
+                            <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide pr-5 text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
                             Array(5).fill(0).map((_, i) => (
-                                <TableRow key={i} className="border-white/[0.04]">
-                                    <TableCell className="pl-5">
-                                        <Skeleton className="h-4 w-48 mb-2" />
-                                        <Skeleton className="h-3 w-32" />
-                                    </TableCell>
-                                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                                <TableRow key={i} className="border-border">
+                                    <TableCell className="pl-5"><Skeleton className="h-4 w-48 mb-1.5" /><Skeleton className="h-3 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-20 rounded-full" /></TableCell>
                                     <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                                    <TableCell className="pr-5 text-right"><Skeleton className="h-8 w-8 ml-auto rounded-lg" /></TableCell>
+                                    <TableCell className="pr-5 text-right"><Skeleton className="h-7 w-7 ml-auto rounded" /></TableCell>
                                 </TableRow>
                             ))
                         ) : tasks.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={4} className="h-40 text-center">
-                                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                        <Search className="w-8 h-8 opacity-40" />
-                                        <p className="text-sm">No tasks found</p>
-                                        <p className="text-xs opacity-70">Try adjusting your filters or create a new task</p>
+                                <TableCell colSpan={4} className="h-36 text-center">
+                                    <div className="flex flex-col items-center gap-1.5 text-muted-foreground">
+                                        <Search className="w-6 h-6 opacity-40" />
+                                        <p className="text-sm font-medium">No tasks found</p>
+                                        <p className="text-xs opacity-70">Adjust your filters or create a new task</p>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -167,15 +156,15 @@ export default function TasksPage() {
                             tasks.map((task) => {
                                 const sc = STATUS_CONFIG[task.status as keyof typeof STATUS_CONFIG];
                                 return (
-                                    <TableRow key={task._id} className="border-white/[0.04] hover:bg-white/[0.02] transition-colors group">
-                                        <TableCell className="pl-5 py-4">
+                                    <TableRow key={task._id} className="border-border hover:bg-muted/30 transition-colors group">
+                                        <TableCell className="pl-5 py-3.5">
                                             <p className="font-medium text-foreground text-sm">{task.title}</p>
                                             {task.description && (
                                                 <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-xs">{task.description}</p>
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${sc?.cls}`}>
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${sc?.cls}`}>
                                                 {sc?.label ?? task.status}
                                             </span>
                                         </TableCell>
@@ -194,23 +183,17 @@ export default function TasksPage() {
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
                                                         variant="ghost"
-                                                        className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                                                        className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded"
                                                     >
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="bg-card border-white/10 w-40">
-                                                    <DropdownMenuItem
-                                                        onClick={() => handleEdit(task)}
-                                                        className="gap-2 text-sm cursor-pointer"
-                                                    >
+                                                <DropdownMenuContent align="end" className="w-36">
+                                                    <DropdownMenuItem onClick={() => handleEdit(task)} className="gap-2 text-sm cursor-pointer">
                                                         <Edit className="h-3.5 w-3.5" /> Edit Task
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuSeparator className="bg-white/[0.06]" />
-                                                    <DropdownMenuItem
-                                                        onClick={() => handleDelete(task._id)}
-                                                        className="gap-2 text-sm text-destructive focus:text-destructive cursor-pointer"
-                                                    >
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem onClick={() => handleDelete(task._id)} className="gap-2 text-sm text-destructive focus:text-destructive cursor-pointer">
                                                         <Trash className="h-3.5 w-3.5" /> Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -227,38 +210,21 @@ export default function TasksPage() {
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">
-                        Showing page {page} of {totalPages}
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 w-8 p-0 rounded-lg border-white/[0.08] bg-white/[0.04]"
-                            onClick={() => setPage(p => Math.max(1, p - 1))}
-                            disabled={page === 1 || isLoading}
-                        >
+                    <p className="text-xs text-muted-foreground">Page {page} of {totalPages}</p>
+                    <div className="flex items-center gap-1.5">
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0"
+                            onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1 || isLoading}>
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 w-8 p-0 rounded-lg border-white/[0.08] bg-white/[0.04]"
-                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                            disabled={page === totalPages || isLoading}
-                        >
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0"
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || isLoading}>
                             <ChevronRight className="h-4 w-4" />
                         </Button>
                     </div>
                 </div>
             )}
 
-            <TaskModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                taskToEdit={taskToEdit}
-                onSuccess={fetchTasks}
-            />
+            <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} taskToEdit={taskToEdit} onSuccess={fetchTasks} />
         </div>
     );
 }

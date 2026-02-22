@@ -66,91 +66,82 @@ export function TaskModal({ isOpen, onClose, taskToEdit, onSuccess }: TaskModalP
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="bg-card border-white/[0.08] rounded-2xl sm:max-w-[440px] p-0 overflow-hidden">
-                {/* Modal header gradient line */}
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+            <DialogContent className="bg-card border-border rounded-xl sm:max-w-[420px]">
+                <DialogHeader className="mb-2">
+                    <DialogTitle className="text-base font-semibold text-foreground">
+                        {taskToEdit ? "Edit Task" : "New Task"}
+                    </DialogTitle>
+                    <p className="text-sm text-muted-foreground">
+                        {taskToEdit ? "Update the details below." : "Fill in the details to create a task."}
+                    </p>
+                </DialogHeader>
 
-                <div className="p-6">
-                    <DialogHeader className="mb-5">
-                        <DialogTitle className="text-lg font-semibold text-foreground">
-                            {taskToEdit ? "Edit Task" : "Create New Task"}
-                        </DialogTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            {taskToEdit ? "Update the details of your task." : "Fill in the details to create a new task."}
-                        </p>
-                    </DialogHeader>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-1">
+                    <div className="space-y-1.5">
+                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Title</Label>
+                        <Input
+                            placeholder="What needs to be done?"
+                            className="h-9 border-border bg-background"
+                            {...form.register("title")}
+                        />
+                        {form.formState.errors.title && (
+                            <p className="text-xs text-destructive">{form.formState.errors.title.message}</p>
+                        )}
+                    </div>
 
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="space-y-1.5">
+                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                            Description <span className="normal-case font-normal text-muted-foreground">(optional)</span>
+                        </Label>
+                        <Input
+                            placeholder="Add more context..."
+                            className="h-9 border-border bg-background"
+                            {...form.register("description")}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5">
-                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Title</Label>
-                            <Input
-                                placeholder="What needs to be done?"
-                                className="bg-white/[0.04] border-white/[0.08] focus:border-primary/40 rounded-xl h-10"
-                                {...form.register("title")}
-                            />
-                            {form.formState.errors.title && (
-                                <p className="text-xs text-destructive">{form.formState.errors.title.message}</p>
-                            )}
+                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</Label>
+                            <Select value={form.watch("status")} onValueChange={(val: any) => form.setValue("status", val)}>
+                                <SelectTrigger className="h-9 border-border bg-background text-sm">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="todo">To Do</SelectItem>
+                                    <SelectItem value="in-progress">In Progress</SelectItem>
+                                    <SelectItem value="done">Done</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div className="space-y-1.5">
-                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Description <span className="normal-case font-normal">(optional)</span></Label>
+                            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                                Due Date <span className="normal-case font-normal">(optional)</span>
+                            </Label>
                             <Input
-                                placeholder="Add more details..."
-                                className="bg-white/[0.04] border-white/[0.08] focus:border-primary/40 rounded-xl h-10"
-                                {...form.register("description")}
+                                type="date"
+                                className="h-9 border-border bg-background text-sm"
+                                {...form.register("dueDate")}
                             />
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1.5">
-                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</Label>
-                                <Select
-                                    value={form.watch("status")}
-                                    onValueChange={(val: any) => form.setValue("status", val)}
-                                >
-                                    <SelectTrigger className="bg-white/[0.04] border-white/[0.08] rounded-xl h-10 text-sm">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-card border-white/10">
-                                        <SelectItem value="todo">To Do</SelectItem>
-                                        <SelectItem value="in-progress">In Progress</SelectItem>
-                                        <SelectItem value="done">Done</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Due Date <span className="normal-case font-normal">(optional)</span></Label>
-                                <Input
-                                    type="date"
-                                    className="bg-white/[0.04] border-white/[0.08] focus:border-primary/40 rounded-xl h-10 text-sm"
-                                    {...form.register("dueDate")}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex justify-end gap-2 pt-2">
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                onClick={onClose}
-                                className="rounded-xl h-10 text-muted-foreground hover:text-foreground"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled={form.formState.isSubmitting}
-                                className="rounded-xl h-10 bg-primary hover:bg-primary/90 text-white font-semibold px-6 glow-sm"
-                            >
-                                {form.formState.isSubmitting ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : taskToEdit ? "Save Changes" : "Create Task"}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                    <div className="flex justify-end gap-2 pt-1">
+                        <Button type="button" variant="ghost" onClick={onClose} className="h-9 text-sm">
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            disabled={form.formState.isSubmitting}
+                            className="h-9 bg-primary hover:bg-primary/90 text-white font-semibold px-5 text-sm"
+                        >
+                            {form.formState.isSubmitting ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : taskToEdit ? "Save Changes" : "Create Task"}
+                        </Button>
+                    </div>
+                </form>
             </DialogContent>
         </Dialog>
     );
