@@ -1,0 +1,29 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+.next/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor
+.vscode/
+.idea/

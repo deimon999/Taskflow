@@ -1,0 +1,247 @@
+{
+    "info": {
+        "name": "TaskFlow API",
+        "description": "Complete API collection for the TaskFlow Secure SaaS Task Dashboard. All protected routes require a valid JWT cookie (set automatically after login).",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000/api",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/auth/register",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+                        },
+                        "description": "Register a new user. Returns user info and sets an HttpOnly JWT cookie."
+                    }
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/auth/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+                        },
+                        "description": "Login with email and password. Sets an HttpOnly JWT cookie valid for 1 hour."
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": "{{baseUrl}}/auth/logout",
+                        "description": "Logout and clear the JWT cookie."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User Profile",
+            "item": [
+                {
+                    "name": "Get My Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "{{baseUrl}}/users/me",
+                        "description": "Get the currently authenticated user's profile. Requires JWT cookie."
+                    }
+                },
+                {
+                    "name": "Update My Profile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/users/me",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\"\n}"
+                        },
+                        "description": "Update name, email, or password. Requires JWT cookie."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tasks",
+            "item": [
+                {
+                    "name": "Create Task",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/tasks",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Build the frontend components\",\n  \"description\": \"Create all shadcn/ui based components\",\n  \"status\": \"todo\",\n  \"dueDate\": \"2026-03-01\"\n}"
+                        },
+                        "description": "Create a new task. Requires JWT cookie."
+                    }
+                },
+                {
+                    "name": "Get All Tasks",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/tasks?page=1&limit=10&status=todo&sort=newest",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "tasks"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default: 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Items per page (default: 10)"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "todo",
+                                    "description": "Filter: todo | in-progress | done"
+                                },
+                                {
+                                    "key": "sort",
+                                    "value": "newest",
+                                    "description": "Sort: newest | oldest | dueDate"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Full-text search on title & description",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all tasks for the logged-in user. Supports filtering, sorting, searching, and pagination."
+                    }
+                },
+                {
+                    "name": "Get Task by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "{{baseUrl}}/tasks/:id",
+                        "description": "Get a single task by its MongoDB ID. Only accessible by the task owner."
+                    }
+                },
+                {
+                    "name": "Update Task",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{baseUrl}}/tasks/:id",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Updated task title\",\n  \"status\": \"in-progress\",\n  \"description\": \"Updated description\"\n}"
+                        },
+                        "description": "Update a task. Only accessible by the task owner."
+                    }
+                },
+                {
+                    "name": "Delete Task",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": "{{baseUrl}}/tasks/:id",
+                        "description": "Delete a task by ID. Only accessible by the task owner."
+                    }
+                },
+                {
+                    "name": "Search Tasks",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/tasks?search=frontend&page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "tasks"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "frontend"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Search tasks by keyword (uses MongoDB $text index on title & description)."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Health",
+            "item": [
+                {
+                    "name": "API Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": "{{baseUrl}}/health",
+                        "description": "Check if the API server is running."
+                    }
+                }
+            ]
+        }
+    ]
+}
