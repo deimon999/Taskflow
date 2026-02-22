@@ -163,33 +163,8 @@ export default function DashboardHome() {
                 </div>
             )}
 
-            {/* Quick links */}
-            {!isLoading && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Link href="/dashboard/tasks">
-                        <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer shadow-card group">
-                            <div className="w-9 h-9 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-100 transition-colors">
-                                <ListTodo className="w-4 h-4 text-indigo-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-semibold text-foreground">Manage Tasks</p>
-                                <p className="text-xs text-muted-foreground">View, create, edit, and delete tasks</p>
-                            </div>
-                        </div>
-                    </Link>
-                    <Link href="/dashboard/profile">
-                        <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer shadow-card group">
-                            <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                                <CheckCircle2 className="w-4 h-4 text-primary" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-semibold text-foreground">Profile Settings</p>
-                                <p className="text-xs text-muted-foreground">Update your name, email, or password</p>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-            )}
+
+
 
             {/* Empty State */}
             {!isLoading && stats?.total === 0 && (
