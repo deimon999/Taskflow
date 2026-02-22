@@ -7,15 +7,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+const navigation = [
+    { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Tasks", href: "/dashboard/tasks", icon: CheckSquare },
+    { name: "Profile", href: "/dashboard/profile", icon: User },
+];
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { logout, user } = useAuth();
     const pathname = usePathname();
-
-    const navigation = [
-        { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-        { name: "Tasks", href: "/dashboard/tasks", icon: CheckSquare },
-        { name: "Profile", href: "/dashboard/profile", icon: User },
-    ];
 
     const initials = user?.name
         ?.split(" ")
@@ -24,7 +24,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .toUpperCase()
         .slice(0, 2);
 
-    // Derive page title from pathname
     const currentNav = navigation.find((n) => n.href === pathname);
     const pageTitle = currentNav?.name ?? "Dashboard";
 
@@ -32,8 +31,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <ProtectedRoute>
             <div className="flex h-screen overflow-hidden bg-background">
 
-                {/* ── Sidebar ── */}
-                <aside className="hidden w-56 flex-col sm:flex border-r border-border bg-sidebar flex-shrink-0">
+                {/* ── Desktop Sidebar ── */}
+                <aside className="hidden md:flex w-56 flex-col border-r border-border bg-sidebar flex-shrink-0">
                     {/* Logo */}
                     <div className="flex h-14 items-center gap-2.5 px-4 border-b border-border">
                         <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
@@ -42,7 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <span className="text-sm font-bold tracking-tight gradient-text">TaskFlow</span>
                     </div>
 
-                    {/* Navigation */}
+                    {/* Nav links */}
                     <nav className="flex-1 px-3 py-4 space-y-0.5">
                         <p className="px-2 mb-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
                             Menu
@@ -52,8 +51,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             return (
                                 <Link key={item.name} href={item.href}>
                                     <div className={`flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors cursor-pointer ${isActive
-                                        ? "bg-primary/10 text-primary"
-                                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                                            ? "bg-primary/10 text-primary"
+                                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                                         }`}>
                                         <item.icon className={`h-4 w-4 flex-shrink-0 ${isActive ? "text-primary" : ""}`} />
                                         <span className="flex-1">{item.name}</span>
@@ -64,7 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         })}
                     </nav>
 
-                    {/* User card — click to go to Profile */}
+                    {/* User card at bottom */}
                     <div className="px-3 pb-4 border-t border-border pt-3 flex-shrink-0">
                         <Link href="/dashboard/profile">
                             <div className="flex items-center gap-2.5 px-2.5 py-2.5 rounded-md hover:bg-accent transition-colors cursor-pointer">
@@ -83,31 +82,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
                 </aside>
 
-                {/* ── Main ── */}
-                <div className="flex-1 flex flex-col overflow-hidden">
+                {/* ── Main area ── */}
+                <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
-                    {/* Top Header Bar */}
-                    <header className="flex h-14 items-center justify-between border-b border-border bg-background px-6 flex-shrink-0">
-                        {/* Left: page title */}
-                        <div className="flex items-center gap-2">
-                            {/* Mobile logo */}
-                            <div className="sm:hidden flex items-center gap-2 mr-3">
+                    {/* Top header */}
+                    <header className="flex h-14 items-center justify-between border-b border-border bg-background px-4 sm:px-6 flex-shrink-0">
+                        {/* Logo (mobile only) + Page title */}
+                        <div className="flex items-center gap-3">
+                            <div className="md:hidden flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center">
                                     <Zap className="w-3 h-3 text-white" fill="white" />
                                 </div>
+                                <span className="text-sm font-bold gradient-text">TaskFlow</span>
                             </div>
-                            <h1 className="text-sm font-semibold text-foreground">{pageTitle}</h1>
+                            <span className="hidden md:block text-sm font-semibold text-foreground">{pageTitle}</span>
                         </div>
 
-                        {/* Right: user avatar + sign out */}
-                        <div className="flex items-center gap-3">
+                        {/* Right: user + sign out */}
+                        <div className="flex items-center gap-2 sm:gap-3">
                             <Link href="/dashboard/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                                <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white">
+                                <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
                                     {initials}
                                 </div>
-                                <span className="hidden sm:block text-sm font-medium text-foreground">{user?.name}</span>
+                                <span className="hidden sm:block text-sm font-medium text-foreground truncate max-w-[120px]">{user?.name}</span>
                             </Link>
-                            <div className="w-px h-5 bg-border" />
+                            <div className="hidden sm:block w-px h-5 bg-border" />
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -120,12 +119,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                     </header>
 
-                    {/* Page Content */}
-                    <main className="flex-1 overflow-y-auto p-6 sm:p-8">
+                    {/* Scrollable page content — extra bottom padding on mobile for bottom nav */}
+                    <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 md:pb-8">
                         {children}
                     </main>
                 </div>
             </div>
+
+            {/* ── Mobile Bottom Navigation ── */}
+            <nav className="md:hidden fixed bottom-0 inset-x-0 border-t border-border bg-background/95 backdrop-blur-sm z-50">
+                <div className="flex items-center">
+                    {navigation.map((item) => {
+                        const isActive = pathname === item.href;
+                        return (
+                            <Link key={item.name} href={item.href} className="flex-1">
+                                <div className={`flex flex-col items-center justify-center gap-1 py-3 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"
+                                    }`}>
+                                    <item.icon className="h-5 w-5" />
+                                    <span className="text-[10px] font-medium">{item.name}</span>
+                                    {isActive && (
+                                        <div className="absolute bottom-0 w-8 h-0.5 bg-primary rounded-full" />
+                                    )}
+                                </div>
+                            </Link>
+                        );
+                    })}
+                </div>
+            </nav>
         </ProtectedRoute>
     );
 }

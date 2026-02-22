@@ -69,60 +69,128 @@ export default function TasksPage() {
     const handleCreate = () => { setTaskToEdit(null); setIsModalOpen(true); };
 
     return (
-        <div className="space-y-6 max-w-5xl">
+        <div className="w-full space-y-4">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-3">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Tasks</h1>
-                    <p className="text-muted-foreground text-sm mt-0.5">
-                        {isLoading ? "Loading..." : `${totalTasks} task${totalTasks !== 1 ? "s" : ""} total`}
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Tasks</h1>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                        {isLoading ? "Loading..." : `${totalTasks} task${totalTasks !== 1 ? "s" : ""}`}
                     </p>
                 </div>
                 <Button
                     onClick={handleCreate}
-                    className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg h-9 px-4 gap-1.5"
+                    className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg h-9 px-3 sm:px-4 gap-1.5 text-sm flex-shrink-0"
                 >
-                    <Plus className="h-4 w-4" /> Add Task
+                    <Plus className="h-4 w-4" />
+                    <span className="hidden sm:block">Add Task</span>
                 </Button>
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-2.5">
+            {/* Filters — stack on mobile, row on desktop */}
+            <div className="flex flex-col sm:flex-row gap-2">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                     <Input
                         placeholder="Search tasks..."
-                        className="pl-9 h-9 border-border bg-background"
+                        className="pl-8 h-9 border-border bg-background text-sm"
                         value={search}
                         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                     />
                 </div>
-                <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
-                    <SelectTrigger className="w-full sm:w-40 h-9 border-border bg-background text-sm">
-                        <SlidersHorizontal className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
-                        <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="todo">To Do</SelectItem>
-                        <SelectItem value="in-progress">In Progress</SelectItem>
-                        <SelectItem value="done">Done</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Select value={sort} onValueChange={setSort} disabled={!!search}>
-                    <SelectTrigger className="w-full sm:w-40 h-9 border-border bg-background text-sm">
-                        <SelectValue placeholder="Sort" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="newest">Newest First</SelectItem>
-                        <SelectItem value="oldest">Oldest First</SelectItem>
-                        <SelectItem value="dueDate">By Due Date</SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex gap-2">
+                    <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
+                        <SelectTrigger className="flex-1 sm:w-36 h-9 border-border bg-background text-sm">
+                            <SlidersHorizontal className="w-3.5 h-3.5 mr-1.5 text-muted-foreground flex-shrink-0" />
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="todo">To Do</SelectItem>
+                            <SelectItem value="in-progress">In Progress</SelectItem>
+                            <SelectItem value="done">Done</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select value={sort} onValueChange={setSort} disabled={!!search}>
+                        <SelectTrigger className="flex-1 sm:w-36 h-9 border-border bg-background text-sm">
+                            <SelectValue placeholder="Sort" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="newest">Newest</SelectItem>
+                            <SelectItem value="oldest">Oldest</SelectItem>
+                            <SelectItem value="dueDate">Due Date</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
 
-            {/* Table */}
-            <div className="rounded-xl border border-border bg-card shadow-card overflow-hidden">
+            {/* ── MOBILE: Card list ── */}
+            <div className="md:hidden space-y-2">
+                {isLoading ? (
+                    Array(4).fill(0).map((_, i) => (
+                        <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-2 shadow-card">
+                            <Skeleton className="h-4 w-48" />
+                            <Skeleton className="h-3 w-32" />
+                            <div className="flex gap-2 mt-2">
+                                <Skeleton className="h-5 w-20 rounded-full" />
+                                <Skeleton className="h-5 w-24 rounded-full" />
+                            </div>
+                        </div>
+                    ))
+                ) : tasks.length === 0 ? (
+                    <div className="flex flex-col items-center gap-2 py-12 text-muted-foreground">
+                        <Search className="w-7 h-7 opacity-40" />
+                        <p className="text-sm font-medium">No tasks found</p>
+                        <p className="text-xs opacity-70">Try a different filter or create a new task</p>
+                    </div>
+                ) : (
+                    tasks.map((task) => {
+                        const sc = STATUS_CONFIG[task.status as keyof typeof STATUS_CONFIG];
+                        return (
+                            <div key={task._id} className="rounded-xl border border-border bg-card p-4 shadow-card">
+                                <div className="flex items-start justify-between gap-2">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-sm text-foreground truncate">{task.title}</p>
+                                        {task.description && (
+                                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{task.description}</p>
+                                        )}
+                                    </div>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-7 w-7 p-0 flex-shrink-0">
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-36">
+                                            <DropdownMenuItem onClick={() => handleEdit(task)} className="gap-2 text-sm">
+                                                <Edit className="h-3.5 w-3.5" /> Edit
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem onClick={() => handleDelete(task._id)} className="gap-2 text-sm text-destructive focus:text-destructive">
+                                                <Trash className="h-3.5 w-3.5" /> Delete
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                                <div className="flex items-center gap-2 mt-3 flex-wrap">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${sc?.cls}`}>
+                                        {sc?.label}
+                                    </span>
+                                    {task.dueDate && (
+                                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                            <Calendar className="w-3 h-3" />
+                                            {format(new Date(task.dueDate), "MMM d, yyyy")}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
+            </div>
+
+            {/* ── DESKTOP: Table ── */}
+            <div className="hidden md:block rounded-xl border border-border bg-card shadow-card overflow-hidden">
                 <Table>
                     <TableHeader>
                         <TableRow className="border-border bg-muted/40 hover:bg-muted/40">
@@ -148,7 +216,7 @@ export default function TasksPage() {
                                     <div className="flex flex-col items-center gap-1.5 text-muted-foreground">
                                         <Search className="w-6 h-6 opacity-40" />
                                         <p className="text-sm font-medium">No tasks found</p>
-                                        <p className="text-xs opacity-70">Adjust your filters or create a new task</p>
+                                        <p className="text-xs opacity-70">Adjust filters or create a new task</p>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -165,7 +233,7 @@ export default function TasksPage() {
                                         </TableCell>
                                         <TableCell>
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${sc?.cls}`}>
-                                                {sc?.label ?? task.status}
+                                                {sc?.label}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -181,10 +249,7 @@ export default function TasksPage() {
                                         <TableCell className="pr-5 text-right">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded"
-                                                    >
+                                                    <Button variant="ghost" className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded">
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
