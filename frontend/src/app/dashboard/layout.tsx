@@ -52,8 +52,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             return (
                                 <Link key={item.name} href={item.href}>
                                     <div className={`flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors cursor-pointer ${isActive
-                                            ? "bg-primary/10 text-primary"
-                                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                                        ? "bg-primary/10 text-primary"
+                                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                                         }`}>
                                         <item.icon className={`h-4 w-4 flex-shrink-0 ${isActive ? "text-primary" : ""}`} />
                                         <span className="flex-1">{item.name}</span>
@@ -64,10 +64,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         })}
                     </nav>
 
-                    {/* User card */}
+                    {/* User card — click to go to Profile */}
                     <div className="px-3 pb-4 border-t border-border pt-3 flex-shrink-0">
                         <Link href="/dashboard/profile">
-                            <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer mb-1">
+                            <div className="flex items-center gap-2.5 px-2.5 py-2.5 rounded-md hover:bg-accent transition-colors cursor-pointer">
                                 <div className="relative flex-shrink-0">
                                     <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white">
                                         {initials}
@@ -80,13 +80,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 </div>
                             </div>
                         </Link>
-                        <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground text-xs h-8"
-                            onClick={() => logout()}
-                        >
-                            <LogOut className="h-3.5 w-3.5" /> Sign out
-                        </Button>
                     </div>
                 </aside>
 

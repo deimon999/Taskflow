@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
-import { Activity, CheckCircle2, Clock, ListTodo, TrendingUp } from "lucide-react";
+import { Activity, CheckCircle2, Clock, ListTodo, TrendingUp, Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface TaskStats {
     total: number;
@@ -51,12 +53,11 @@ export default function DashboardHome() {
 
     const statCards = [
         {
-            title: "Total Tasks",
+            title: "Total",
             value: stats?.total ?? 0,
             icon: Activity,
             accent: "text-indigo-600",
             iconBg: "bg-indigo-50 border-indigo-100",
-            sub: "All time",
         },
         {
             title: "To Do",
@@ -64,7 +65,6 @@ export default function DashboardHome() {
             icon: ListTodo,
             accent: "text-amber-600",
             iconBg: "bg-amber-50 border-amber-100",
-            sub: "Pending action",
         },
         {
             title: "In Progress",
@@ -72,79 +72,83 @@ export default function DashboardHome() {
             icon: Clock,
             accent: "text-blue-600",
             iconBg: "bg-blue-50 border-blue-100",
-            sub: "Being worked on",
         },
         {
-            title: "Completed",
+            title: "Done",
             value: stats?.done ?? 0,
             icon: CheckCircle2,
             accent: "text-emerald-600",
             iconBg: "bg-emerald-50 border-emerald-100",
-            sub: "Finished tasks",
         },
     ];
 
     return (
-        <div className="space-y-8 max-w-5xl">
-            {/* Greeting */}
-            <div className="flex items-start justify-between">
+        <div className="w-full space-y-6">
+            {/* Greeting row */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <p className="text-sm text-muted-foreground">{getGreeting()},</p>
-                    <h1 className="text-2xl font-bold text-foreground mt-0.5">
+                    <p className="text-xs text-muted-foreground">{getGreeting()},</p>
+                    <h1 className="text-xl sm:text-2xl font-bold text-foreground mt-0.5">
                         {user?.name?.split(" ")[0]} 👋
                     </h1>
-                    <p className="text-muted-foreground mt-2 text-sm">
+                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
                         {isLoading
                             ? "Loading your workspace..."
                             : stats?.total === 0
-                                ? "No tasks yet — head to Tasks to get started."
-                                : `You've completed ${completionRate}% of your tasks. Keep going!`}
+                                ? "No tasks yet — create one to get started."
+                                : `You've completed ${completionRate}% of your tasks.`}
                     </p>
                 </div>
-                {!isLoading && stats && stats.total > 0 && (
-                    <div className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700">
-                        <TrendingUp className="w-4 h-4" />
-                        <span className="text-sm font-semibold">{completionRate}% Done</span>
-                    </div>
-                )}
+
+                <div className="flex items-center gap-2 flex-wrap">
+                    {!isLoading && stats && stats.total > 0 && (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-semibold">
+                            <TrendingUp className="w-3.5 h-3.5" />
+                            {completionRate}% Done
+                        </div>
+                    )}
+                    <Link href="/dashboard/tasks">
+                        <Button className="h-9 bg-primary hover:bg-primary/90 text-white text-sm font-semibold px-4 gap-1.5">
+                            <Plus className="w-4 h-4" /> New Task
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
-            {/* Stat Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {/* Stat Cards — 2 col on mobile, 4 on desktop */}
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
                 {isLoading
                     ? Array(4).fill(0).map((_, i) => (
-                        <div key={i} className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-card">
+                        <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-card">
                             <div className="flex items-center justify-between">
-                                <Skeleton className="h-4 w-24" />
-                                <Skeleton className="h-8 w-8 rounded-lg" />
+                                <Skeleton className="h-3 w-16" />
+                                <Skeleton className="h-7 w-7 rounded-lg" />
                             </div>
-                            <Skeleton className="h-8 w-16" />
-                            <Skeleton className="h-3 w-28" />
+                            <Skeleton className="h-7 w-12" />
                         </div>
                     ))
                     : statCards.map((stat, i) => (
                         <div
                             key={i}
-                            className="rounded-xl border border-border bg-card p-5 shadow-card hover:shadow-card-hover transition-shadow"
+                            className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-card hover:shadow-card-hover transition-shadow"
                         >
-                            <div className="flex items-center justify-between mb-4">
-                                <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center border ${stat.iconBg}`}>
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-xs font-medium text-muted-foreground">{stat.title}</p>
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${stat.iconBg}`}>
                                     <stat.icon className={`h-4 w-4 ${stat.accent}`} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-foreground tabular-nums">{stat.value}</div>
-                            <p className="text-xs text-muted-foreground mt-1">{stat.sub}</p>
+                            <div className="text-2xl sm:text-3xl font-bold text-foreground tabular-nums">{stat.value}</div>
                         </div>
                     ))}
             </div>
 
             {/* Progress Bar */}
             {!isLoading && stats && stats.total > 0 && (
-                <div className="rounded-xl border border-border bg-card p-5 shadow-card">
+                <div className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-card">
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-semibold text-foreground">Overall Progress</h2>
-                        <span className="text-sm text-muted-foreground">{stats.done} / {stats.total} tasks done</span>
+                        <span className="text-xs text-muted-foreground">{stats.done} / {stats.total} done</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                         <div
@@ -154,21 +158,52 @@ export default function DashboardHome() {
                     </div>
                     <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
                         <span>{completionRate}% completion rate</span>
-                        <span>{stats.inProgress} in progress</span>
+                        {stats.inProgress > 0 && <span>{stats.inProgress} in progress</span>}
                     </div>
+                </div>
+            )}
+
+            {/* Quick links */}
+            {!isLoading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Link href="/dashboard/tasks">
+                        <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer shadow-card group">
+                            <div className="w-9 h-9 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-100 transition-colors">
+                                <ListTodo className="w-4 h-4 text-indigo-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-semibold text-foreground">Manage Tasks</p>
+                                <p className="text-xs text-muted-foreground">View, create, edit, and delete tasks</p>
+                            </div>
+                        </div>
+                    </Link>
+                    <Link href="/dashboard/profile">
+                        <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer shadow-card group">
+                            <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                                <CheckCircle2 className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-semibold text-foreground">Profile Settings</p>
+                                <p className="text-xs text-muted-foreground">Update your name, email, or password</p>
+                            </div>
+                        </div>
+                    </Link>
                 </div>
             )}
 
             {/* Empty State */}
             {!isLoading && stats?.total === 0 && (
-                <div className="flex flex-col items-center justify-center py-20 rounded-xl border border-dashed border-border text-center">
+                <div className="flex flex-col items-center justify-center py-16 rounded-xl border border-dashed border-border text-center">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                         <ListTodo className="h-5 w-5 text-primary" />
                     </div>
                     <h3 className="text-sm font-semibold text-foreground">No tasks yet</h3>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-xs">
-                        Head over to Tasks to create your first task and start tracking progress.
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1 mb-4">Create your first task to start tracking progress</p>
+                    <Link href="/dashboard/tasks">
+                        <Button size="sm" className="bg-primary text-white hover:bg-primary/90 h-8 px-4 text-xs gap-1.5">
+                            <Plus className="w-3.5 h-3.5" /> Create Task
+                        </Button>
+                    </Link>
                 </div>
             )}
         </div>
