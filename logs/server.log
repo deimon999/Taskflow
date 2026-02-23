@@ -1,0 +1,19 @@
+[2026-02-23T03:45:01.023Z] INFO  Server starting in development mode
+[2026-02-23T03:45:01.105Z] INFO  Loading environment variables
+[2026-02-23T03:45:01.108Z] INFO  CORS origin set to: http://localhost:3000
+[2026-02-23T03:45:01.210Z] INFO  Connecting to MongoDB...
+[2026-02-23T03:45:01.847Z] SUCCESS MongoDB connected: cluster0.mongodb.net
+[2026-02-23T03:45:01.851Z] INFO  Registering routes...
+[2026-02-23T03:45:01.853Z] INFO    POST   /api/auth/register
+[2026-02-23T03:45:01.854Z] INFO    POST   /api/auth/login
+[2026-02-23T03:45:01.854Z] INFO    POST   /api/auth/logout
+[2026-02-23T03:45:01.855Z] INFO    GET    /api/users/me        [protected]
+[2026-02-23T03:45:01.855Z] INFO    PUT    /api/users/me        [protected]
+[2026-02-23T03:45:01.856Z] INFO    POST   /api/tasks           [protected]
+[2026-02-23T03:45:01.856Z] INFO    GET    /api/tasks           [protected]
+[2026-02-23T03:45:01.857Z] INFO    GET    /api/tasks/:id       [protected]
+[2026-02-23T03:45:01.857Z] INFO    PUT    /api/tasks/:id       [protected]
+[2026-02-23T03:45:01.858Z] INFO    DELETE /api/tasks/:id       [protected]
+[2026-02-23T03:45:01.860Z] INFO  Rate limiters applied: global (100/15min), auth (50/1hr)
+[2026-02-23T03:45:01.862Z] INFO  Helmet security headers enabled
+[2026-02-23T03:45:01.863Z] SUCCESS Server listening on port 5000

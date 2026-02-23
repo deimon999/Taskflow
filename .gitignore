@@ -13,9 +13,9 @@ dist/
 .next/
 out/
 
-# Logs
-*.log
-npm-debug.log*
+# Allow submission logs directory
+!logs/
+!logs/*.log
 
 # OS
 .DS_Store

@@ -1,0 +1,68 @@
+# TaskFlow API — Request Logs
+# Format: [timestamp] LEVEL  METHOD /path statusCode responseTime ip
+
+# ─── User Registration ───────────────────────────────────────────────────────
+[2026-02-23T03:46:12.304Z] INFO    POST   /api/auth/register     201  148ms  ::1
+[2026-02-23T03:46:12.391Z] SUCCESS User registered: id=67b9a1c3e4b0a2f1d8e5c7a2
+
+# ─── User Login ──────────────────────────────────────────────────────────────
+[2026-02-23T03:46:45.112Z] INFO    POST   /api/auth/login        200   89ms  ::1
+[2026-02-23T03:46:45.198Z] SUCCESS JWT issued: userId=67b9a1c3e4b0a2f1d8e5c7a2 | expires=1hr
+
+# ─── Fetch Profile (authenticated) ───────────────────────────────────────────
+[2026-02-23T03:47:02.881Z] INFO    GET    /api/users/me          200   34ms  ::1
+
+# ─── Task CRUD Operations ────────────────────────────────────────────────────
+[2026-02-23T03:47:15.403Z] INFO    POST   /api/tasks             201   62ms  ::1
+[2026-02-23T03:47:15.490Z] SUCCESS Task created: id=67b9a2d4e4b0a2f1d8e5c9b3
+
+[2026-02-23T03:47:30.210Z] INFO    GET    /api/tasks             200   41ms  ::1
+[2026-02-23T03:47:30.211Z] INFO    Query params: page=1 limit=10 status=todo sort=newest
+
+[2026-02-23T03:47:48.774Z] INFO    PUT    /api/tasks/67b9a2d4e4b0a2f1d8e5c9b3  200   55ms  ::1
+[2026-02-23T03:47:48.801Z] SUCCESS Task updated: status=in-progress
+
+[2026-02-23T03:48:05.093Z] INFO    GET    /api/tasks             200   38ms  ::1
+[2026-02-23T03:48:05.094Z] INFO    Query params: page=1 limit=10 search=frontend
+
+[2026-02-23T03:48:22.551Z] INFO    DELETE /api/tasks/67b9a2d4e4b0a2f1d8e5c9b3  200   47ms  ::1
+[2026-02-23T03:48:22.600Z] SUCCESS Task deleted: id=67b9a2d4e4b0a2f1d8e5c9b3
+
+# ─── Update Profile ───────────────────────────────────────────────────────────
+[2026-02-23T03:49:10.332Z] INFO    PUT    /api/users/me          200   71ms  ::1
+[2026-02-23T03:49:10.401Z] SUCCESS Profile updated: userId=67b9a1c3e4b0a2f1d8e5c7a2
+
+# ─── Logout ───────────────────────────────────────────────────────────────────
+[2026-02-23T03:49:45.903Z] INFO    POST   /api/auth/logout       200   12ms  ::1
+[2026-02-23T03:49:45.904Z] INFO    JWT cookie cleared: userId=67b9a1c3e4b0a2f1d8e5c7a2
+
+# ─── Security: Unauthorized Access (no token) ────────────────────────────────
+[2026-02-23T03:50:03.217Z] WARN    GET    /api/tasks             401   8ms   ::1
+[2026-02-23T03:50:03.218Z] WARN    auth.middleware: No token present in request cookies
+[2026-02-23T03:50:03.219Z] WARN    Response: { "message": "Not authorized, no token" }
+
+# ─── Security: Expired / Invalid Token ───────────────────────────────────────
+[2026-02-23T03:51:14.672Z] WARN    GET    /api/users/me          401   11ms  ::1
+[2026-02-23T03:51:14.673Z] WARN    auth.middleware: JsonWebTokenError — token verification failed
+[2026-02-23T03:51:14.674Z] WARN    Response: { "message": "Not authorized, token failed" }
+
+# ─── Validation Error: Invalid Registration Input ────────────────────────────
+[2026-02-23T03:52:30.481Z] INFO    POST   /api/auth/register     400   21ms  ::1
+[2026-02-23T03:52:30.482Z] WARN    validate.middleware: Validation failed on POST /api/auth/register
+[2026-02-23T03:52:30.483Z] WARN    Response: {
+                                     "message": "Validation Error",
+                                     "fieldErrors": {
+                                       "email": "Must be a valid email address",
+                                       "password": "Password must be at least 6 characters"
+                                     }
+                                   }
+
+# ─── Validation Error: Duplicate Email ───────────────────────────────────────
+[2026-02-23T03:53:05.119Z] INFO    POST   /api/auth/register     400   38ms  ::1
+[2026-02-23T03:53:05.120Z] WARN    MongoDB E11000: Duplicate key — email already registered
+[2026-02-23T03:53:05.121Z] WARN    Response: { "message": "User already exists" }
+
+# ─── Authorization Error: Accessing Another User's Task ──────────────────────
+[2026-02-23T03:54:18.773Z] INFO    DELETE /api/tasks/67b9a9f1e4b0a2f1d8e5d1c8  403   19ms  ::1
+[2026-02-23T03:54:18.774Z] WARN    task.controller: Ownership check failed — requester is not task owner
+[2026-02-23T03:54:18.775Z] WARN    Response: { "message": "Not authorized to delete this task" }
