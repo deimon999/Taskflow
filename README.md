@@ -10,7 +10,15 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
-*Secure JWT authentication · Full Task CRUD · Premium dark SaaS UI*
+*Secure JWT authentication · Full Task CRUD · Neutral Light SaaS UI*
+
+---
+
+### 🌐 Live Demo
+- **Frontend (Vercel):** [https://taskflow-3ipfghiy5-deimon999s-projects.vercel.app](https://taskflow-3ipfghiy5-deimon999s-projects.vercel.app)
+- **Backend (Render):** [https://taskflow-a7of.onrender.com/api/health](https://taskflow-a7of.onrender.com/api/health)
+
+> **Note:** The backend uses a free Render instance. It spins down after 15 minutes of inactivity, so the very first request might take ~50 seconds to wake it up.
 
 </div>
 
@@ -27,7 +35,21 @@
 | 📄 **Pagination** | Server-side, cursor-driven pagination |
 | 🎨 **UI** | Premium dark UI — shadcn/ui + Tailwind + glassmorphism |
 | ⚡ **Validated** | Zod (client) + express-validator (server) on every form |
-| 📱 **Responsive** | Mobile-first layout with adaptive sidebar |
+| 📱 **Responsive** | Mobile-first layout with adaptive sidebar and bottom nav |
+
+---
+
+## 📸 Screenshots
+
+*(Replace the placeholder images below by dropping your actual screenshots into the `screenshots/` folder)*
+
+| Login / Register | Dashboard Overview |
+| :---: | :---: |
+| <img src="./screenshots/auth.png" alt="Auth Page" width="450"/> | <img src="./screenshots/dashboard.png" alt="Dashboard" width="450"/> |
+
+| Tasks View (Desktop/Mobile) | Profile Settings |
+| :---: | :---: |
+| <img src="./screenshots/tasks.png" alt="Tasks Page" width="450"/> | <img src="./screenshots/profile.png" alt="Profile Page" width="450"/> |
 
 ---
 
