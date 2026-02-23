@@ -23,9 +23,10 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true, // Allow setting HttpOnly cookies
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Body Parser and Cookie Parser
@@ -38,7 +39,7 @@ app.use('/api', apiLimiter);
 
 // Routes Setup
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'API is running' });
+    res.status(200).json({ status: 'ok' });
 });
 
 // App Routes

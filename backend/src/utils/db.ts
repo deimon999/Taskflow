@@ -2,10 +2,14 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI as string);
+        // MONGO_URI for production (Render), MONGODB_URI for local dev
+        const uri = (process.env.MONGO_URI || process.env.MONGODB_URI) as string;
+        const conn = await mongoose.connect(uri, {
+            maxPoolSize: 10, // Connection pooling for scalability
+        });
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        console.error(`MongoDB connection error: ${error.message}`);
         process.exit(1);
     }
 };

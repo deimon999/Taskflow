@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '@/lib/api';
+import { toast } from 'sonner';
 
 interface User {
     _id: string;
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             try {
                 const { data } = await api.get('/users/me');
                 setUser(data);
-            } catch (error) {
+            } catch {
                 setUser(null);
             } finally {
                 setIsLoading(false);
@@ -37,13 +38,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         fetchUser();
 
-        // Listen for unauthorized events to clear state
-        const handleUnauthorized = () => setUser(null);
-        window.addEventListener('unauthorized', handleUnauthorized);
-
-        return () => {
-            window.removeEventListener('unauthorized', handleUnauthorized);
+        // Global 401 handler — session expired or token invalid
+        const handleUnauthorized = () => {
+            setUser(null);
+            toast.error('Session expired. Please sign in again.');
+            // Redirect to login — next router not available here, use window
+            if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+                window.location.href = '/login';
+            }
         };
+
+        window.addEventListener('unauthorized', handleUnauthorized);
+        return () => window.removeEventListener('unauthorized', handleUnauthorized);
     }, []);
 
     const login = (userData: User) => {
@@ -53,9 +59,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = async () => {
         try {
             await api.post('/auth/logout');
+        } catch {
+            // Always clear local state even if the request fails
+        } finally {
             setUser(null);
-        } catch (error) {
-            console.error('Logout failed', error);
         }
     };
 
@@ -65,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             isAuthenticated: !!user,
             isLoading,
             login,
-            logout
+            logout,
         }}>
             {children}
         </AuthContext.Provider>
